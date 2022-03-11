@@ -1,9 +1,7 @@
 import java.awt.EventQueue;
 import javax.swing.JFrame;
-
 import java.util.ArrayList;
 import java.util.Random;
-
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -15,7 +13,7 @@ import java.awt.Panel;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
 
-public class main {
+public class Saper {
 	
 	int[][] Tab = new int[16][16];
 	ArrayList<JButton> ListB = new ArrayList<>();
@@ -238,7 +236,7 @@ public class main {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					main window = new main();
+					Saper window = new Saper();
 					window.frmMinesweeper.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -250,7 +248,7 @@ public class main {
 	/**
 	 * Create the application.
 	 */
-	public main() {
+	public Saper() {
 		initialize();
 	}
 
