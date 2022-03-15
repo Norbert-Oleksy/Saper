@@ -1,7 +1,5 @@
 import java.awt.EventQueue;
 import javax.swing.JFrame;
-import java.util.ArrayList;
-import java.util.Random;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -15,206 +13,29 @@ import javax.swing.SwingConstants;
 
 public class Saper {
 	
-	int[][] Tab = new int[16][16];
-	ArrayList<JButton> ListB = new ArrayList<>();
-	int BorderMax=4;
-	int ButtonNr=0;
-	int BombNr=2;
-	int EmptyB=0;
-	int LevelG=4;
-	int FontSize=8;
+	Board board = new Board();
 	
 	public void Reset() {
 		panelButtons.removeAll();
 		INFOScreen.setForeground(Color.BLACK);
-		ListB.clear();
-		for(int y=0;y<16;y++) {
-			for(int x=0;x<16;x++) {
-				Tab[y][x]=0;
-			}
-		}
-	}
-	
-	public void SetGameSiez() {
-		String size= String.valueOf(SIZEBox.getSelectedItem());
-		switch(size) {
-			case "4x4":
-				BorderMax=4;
-				FontSize=32;
-				ButtonNr=BorderMax*BorderMax;
-				break;
-			case "8x8":
-				BorderMax=8;
-				FontSize=16;
-				ButtonNr=BorderMax*BorderMax;
-				break;
-			case "16x16":
-				BorderMax=16;
-				FontSize=8;
-				ButtonNr=BorderMax*BorderMax;
-				break;
-		}
+		board.ResetB();
 	}
 	
 	public void SetGameLevel() {
-		String level= String.valueOf(LVLBox.getSelectedItem());
-		switch(level) {
-			case "EASY":
-				LevelG=5;
-				BombNr=ButtonNr/LevelG;
-				EmptyB=ButtonNr-BombNr;
-				break;
-			case "MEDIUM":
-				LevelG=4;
-				BombNr=ButtonNr/LevelG;
-				EmptyB=ButtonNr-BombNr;
-				break;
-			case "HARD":
-				LevelG=3;
-				BombNr=ButtonNr/LevelG;
-				EmptyB=ButtonNr-BombNr;
-				break;
-		}
-		INFOScreen.setText(String.valueOf(EmptyB));
-	}
-	
-	public void PlantingBombs() {
-		Random random = new Random();
-		int bm=0;
-		int br=BorderMax-1;
-		int x,y;
-		while(bm<BombNr) {
-			x=random.nextInt(br);
-			y=random.nextInt(br);
-			if(Tab[y][x]!=9){
-				Tab[y][x]=9;
-				bm++;
-			}
-		}
-		for(int a=0;a<BorderMax;a++) {
-			for(int b=0;b<BorderMax;b++) {
-				if(Tab[a][b]!=9) {
-				Tab[a][b]=Surroundings(a,b);
-				}
-			}
-		}
-	}
-	
-	public int Surroundings(int y, int x) {
-
-		int result=0;
-		int xmin;
-		int ymin;
-		int xmax;
-		int ymax;
-		if(x>0) {
-			xmin=x-1;
-		}
-		else {
-			xmin=x;
-		}
-		if(y>0) {
-			ymin=y-1;
-		}
-		else {
-			ymin=y;
-		}
-		if(x<BorderMax-1) {
-			xmax=x+1;
-		}
-		else {
-			xmax=x;
-		}
-		if(y<BorderMax-1) {
-			ymax=y+1;
-		}
-		else {
-			ymax=y;
-		}
-		
-		for(int a=ymin;a<=ymax;a++) {
-			for(int b=xmin;b<=xmax;b++){
-				if(Tab[a][b]==9) result++;
-			}
-		}
-		return result;
-	}
-	
-	public int GetButtonValue(int id) {
-		int y=id/BorderMax;
-		int x=id%BorderMax;
-		int vl=Tab[y][x];
-		return vl;
+		board.SetGameLevelB(String.valueOf(LVLBox.getSelectedItem()));
+		INFOScreen.setText(String.valueOf(board.EmptyB));
 	}
 	
 	public void ButtonsGenerator() {
-		panelButtons.setLayout(new GridLayout(BorderMax, BorderMax));
-		for(int i=0;i<ButtonNr;i++) {
-			JButton button = new JButton();
-			button.setToolTipText(String.valueOf(i));
-			button.setBackground(Color.LIGHT_GRAY);
-			button.setFont(new Font("Tahoma", Font.BOLD, FontSize));
-			button.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                	ButtonAction(Integer.parseInt(button.getToolTipText()));
-                }
-            });
-			ListB.add(button);
-			panelButtons.add(button);
-		}
-	}
-	
-	public void BlockButton(int id) {
-		JButton button = ListB.get(id);
-		for(int i=0;i<ButtonNr;i++) {
-			if(i!=id) {
-				button = ListB.get(i);
-				button.setEnabled(false);
-			}
-		}
-	}
-	
-	
-	
-	public void ButtonAction(int id) {
-		int valueB=GetButtonValue(id);
-		JButton button = ListB.get(id);
-		button.setBackground(Color.WHITE);
-		if(valueB==0) {
-			button.setText(String.valueOf(valueB));
-			EmptyB=EmptyB-1;
-			INFOScreen.setText(String.valueOf(EmptyB));
-			button.setEnabled(false);
-		}
-		else if(valueB>0&&valueB<9) {
-			button.setText(String.valueOf(valueB));
-			EmptyB=EmptyB-1;
-			INFOScreen.setText(String.valueOf(EmptyB));
-			button.setEnabled(false);
-		}
-		else if(valueB==9) {
-			INFOScreen.setText("You LOSE");
-			INFOScreen.setForeground(Color.RED);
-			button.setText("X");
-			button.setForeground(Color.RED);
-			BlockButton(id);
-		}
-		else {
-			button.setText("ERROR");
-		}
-		if(EmptyB==0) {
-			INFOScreen.setText("You WIN");
-			INFOScreen.setForeground(Color.GREEN);
-			BlockButton(id);
-		}
+		board.ButtonsGeneratorB(panelButtons, INFOScreen);
 	}
 	
 	public void StartGame() {
 		Reset();
-		SetGameSiez();
+		board.SetGameSiezB(String.valueOf(SIZEBox.getSelectedItem()));
 		SetGameLevel();
 		ButtonsGenerator();
-		PlantingBombs();
+		board.PlantingBombsB();
 		panelButtons.revalidate();
 	}
 	
