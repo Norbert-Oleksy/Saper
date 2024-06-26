@@ -154,6 +154,10 @@ public class Board {
 			}
 		}
 	}
+	
+	private void EmptyButton(int id) {
+		
+	}
 
 	public void ButtonAction(int id, JTextField INFOScreen) {
 		int valueB=GetButtonValue(id);
